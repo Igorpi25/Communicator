@@ -25,10 +25,9 @@ public class Communicator {
 //---------------Server URL----------------------------------------------
     
     public final static String URL_PROTOCOL="ws://";
-    public final static String URL_DOMEN="46.48.234.129/";//"192.168.0.100/";    
-    public final static String URL_VERSION="v1/";
-    public final static String URL_PORT=":8001";
-    public final static String URL_SERVER=URL_PROTOCOL+URL_DOMEN+URL_VERSION+URL_PORT;
+    public final static String URL_DOMEN="yourserver.com";  
+    public final static String URL_PORT=":8001";//Websocket server port
+    public final static String URL_SERVER=URL_PROTOCOL+URL_DOMEN+URL_PORT;
     
 //--------------Service LastTime Preferences--------------------------------
 	
