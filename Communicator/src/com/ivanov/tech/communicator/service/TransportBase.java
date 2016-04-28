@@ -30,59 +30,59 @@ public abstract class TransportBase extends ContextWrapper implements Listener,O
 //------------ConnectionService------------------------
 	
 	public void onCommunicatorServiceCreate() {	    
-	    Log.d(TAG, "onServiceCreate");	    
+	   // Log.d(TAG, "onServiceCreate");	    
 	}
 	
 	public void onCommunicatorServiceDestroy() {	   
-	    Log.d(TAG, "onServiceDestroy");
+	   // Log.d(TAG, "onServiceDestroy");
 	}
 
 //------------TransportProtocol------------------
 	
 	public boolean onOutgoingMessage(int transport, JSONObject json){	
-		Log.d(TAG, "onOutgoingMessage transport="+transport+" json="+json);
+		//Log.d(TAG, "onOutgoingMessage transport="+transport+" json="+json);
 		return false;
 	}
 	
 	public boolean onIncomingMessage(int transport, JSONObject json){
-		Log.d(TAG, "onIncomingMessage transport="+transport+" json="+json);
+		//Log.d(TAG, "onIncomingMessage transport="+transport+" json="+json);
 		return false;
 	}
 	
 	@Override
 	public void onOutgoingFailed(int outgoing_failed_type, int message_id ) {
-		Log.d(TAG, "onOutgoingFailed outgoing_failed_type="+outgoing_failed_type+" message_id="+message_id);
+		//Log.d(TAG, "onOutgoingFailed outgoing_failed_type="+outgoing_failed_type+" message_id="+message_id);
 	}
 		
 //------------WebSocketClient.Listener------------------------
 	    
 	@Override
 	public void onCreate(WebSocketClient websocketclient) {
-		Log.d(TAG, "onConnect(WebSocketClient)");
+		//Log.d(TAG, "onConnect(WebSocketClient)");
 	}
 	
     public void onConnect() {
-    	Log.d(TAG, "onConnect");
+    	//Log.d(TAG, "onConnect");
     }
 
     @Override
     public void onMessage(String message) {
-    	Log.d(TAG, "onMessage message="+message);  
+    	//Log.d(TAG, "onMessage message="+message);  
     }
 
     @Override
     public void onMessage(byte[] data) {
-    	Log.d(TAG, "onMessage data");    		    	
+    	//Log.d(TAG, "onMessage data");    		    	
     }
 
     @Override
     public void onDisconnect(int code, String reason) {
-        Log.d(TAG, String.format("onDisconnect code=%d Reason=%s", code, reason));        
+       // Log.d(TAG, String.format("onDisconnect code=%d Reason=%s", code, reason));        
     }
 
     @Override
     public void onError(Exception error) {
-        Log.e(TAG, "onError error="+error);      
+        //Log.e(TAG, "onError error="+error);      
     }
 
 }

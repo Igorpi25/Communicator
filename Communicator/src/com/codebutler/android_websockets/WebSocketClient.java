@@ -281,7 +281,7 @@ public class WebSocketClient {
     	mHandler.post(new Runnable() {
             @Override
             public void run() {
-            	Log.d(TAG, "sendFrameWithOutgoingProtocol Runnable.run message="+message);
+            	//Log.d(TAG, "sendFrameWithOutgoingProtocol Runnable.run message="+message);
                 try {
                     synchronized (mSendLock) {
                         if (mSocket == null) {
@@ -292,7 +292,7 @@ public class WebSocketClient {
                         outputStream.flush();
                     }
                 } catch (Exception e) {
-                	Log.d(TAG, "sendFrameWithOutgoingProtocol Runnable.run Exception e="+e);
+                	//Log.d(TAG, "sendFrameWithOutgoingProtocol Runnable.run Exception e="+e);
                     mListener.onError(e);   
                     outgoinglistener.onOutgoingFailed(outgoing_failed_type,message_id);         
                 } 

@@ -44,7 +44,7 @@ public abstract class CommunicatorService extends Service implements Listener{
 	
 	public void onCreate() {
 	    super.onCreate();
-	    Log.d(TAG, "onCreate");
+	    //Log.d(TAG, "onCreate");
 	    
 	    //If Internet connection change
 	    IntentFilter filter = new IntentFilter();
@@ -61,7 +61,7 @@ public abstract class CommunicatorService extends Service implements Listener{
 	
 	public void onDestroy() {
 	    super.onDestroy();
-	    Log.d(TAG, "onDestroy");
+	    //Log.d(TAG, "onDestroy");
 	    unregisterReceiver(receiver_CONNECTIVITY_CHANGE);
 	    
 	    for(TransportBase transport : transports){
@@ -77,10 +77,12 @@ public abstract class CommunicatorService extends Service implements Listener{
 	    this.startId=startId;
 	    
 	    if(websocketclient==null){
-	    	//Обязательный параметр. Required parameter. Без этого сервер не может нас идентифицировать
+	    	//Обязательный параметр. Required parameter. Без этого сервер не может нас идентифицировать	    	
 	    	userid=intent.getIntExtra("userid", -1);//Так как Session недоступен в Connection вынуждены так делать
+	    	
 		    websocketclient=createAndSetupWebsocketСlient();	
 	    }
+	    //Log.d(TAG, "onStartCommand userid="+userid);
 	    
 	    websocketclient.connect();
 	    	    
@@ -113,7 +115,7 @@ public abstract class CommunicatorService extends Service implements Listener{
     
     //Создает WebSocketClient, ставит параметры сервера, ставит listener
     public WebSocketClient createAndSetupWebsocketСlient(){
-    	Log.d(TAG, "createWebSocketClient");
+    	//Log.d(TAG, "createWebSocketClient");
     	
     	WebSocketClient websocketclient;
 
@@ -135,7 +137,7 @@ public abstract class CommunicatorService extends Service implements Listener{
     
     @Override
     public void onCreate(WebSocketClient websocketclient) {
-    	Log.d(TAG, "onCreate(WebSocketClient)");
+    	//Log.d(TAG, "onCreate(WebSocketClient)");
     	
     	for(TransportBase transport : transports){
     		transport.onCreate(websocketclient);
@@ -143,7 +145,7 @@ public abstract class CommunicatorService extends Service implements Listener{
     }
     
     public void onConnect() {
-    	Log.d(TAG, "onConnect");
+    	//Log.d(TAG, "onConnect");
 		
 		ResetConnectAttempts();
 		
@@ -154,7 +156,7 @@ public abstract class CommunicatorService extends Service implements Listener{
 
     @Override
     public void onMessage(String message) {
-    	Log.d(TAG, "onMessage message="+message);  
+    	//Log.d(TAG, "onMessage message="+message);  
 
         JSONObject json=null;
 	    int transport=0;
@@ -190,7 +192,7 @@ public abstract class CommunicatorService extends Service implements Listener{
 
     @Override
     public void onMessage(byte[] data) {
-    	Log.d(TAG, "onMessage data");  
+    	//Log.d(TAG, "onMessage data");  
     	for(TransportBase transport : transports){
     		transport.onMessage(data);
     	}
@@ -198,7 +200,7 @@ public abstract class CommunicatorService extends Service implements Listener{
 
     @Override
     public void onDisconnect(int code, String reason) {
-        Log.d(TAG, String.format("onDisconnect code=%d Reason=%s", code, reason));
+       // Log.d(TAG, String.format("onDisconnect code=%d Reason=%s", code, reason));
                 
         Reconnect();
         
@@ -209,7 +211,7 @@ public abstract class CommunicatorService extends Service implements Listener{
 
     @Override
     public void onError(Exception error) {
-        Log.e(TAG, "onError error="+error);
+       // Log.e(TAG, "onError error="+error);
       
         Reconnect();
         

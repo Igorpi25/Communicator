@@ -20,12 +20,12 @@ import org.json.JSONObject;
 
 public class Communicator {
 
-    private final static String TAG="Connection";
+    private final static String TAG="Communicator";
     
 //---------------Server URL----------------------------------------------
     
     public final static String URL_PROTOCOL="ws://";
-    public final static String URL_DOMEN="yourserver.com";  
+    public final static String URL_DOMEN="space14.ru";  
     public final static String URL_PORT=":8001";//Websocket server port
     public final static String URL_SERVER=URL_PROTOCOL+URL_DOMEN+URL_PORT;
     
@@ -44,10 +44,12 @@ public class Communicator {
     }
     
     public static long getLastTimestamp(){		
+    	Log.d(TAG, "getLastTimestamp timestamp="+preferences.getLong(Communicator.PREF_LAST_TIMESTAMP, Communicator.PREF_LAST_TIMESTAMP_DEFAULT));
   		return preferences.getLong(Communicator.PREF_LAST_TIMESTAMP, Communicator.PREF_LAST_TIMESTAMP_DEFAULT);
   	}
     
-    public static void setLastTimestamp(long timestamp){  		
+    public static void setLastTimestamp(long timestamp){  	
+    		Log.d(TAG, "setLastTimestamp timestamp="+timestamp);
   			preferences.edit().putLong(Communicator.PREF_LAST_TIMESTAMP, timestamp).commit();
   	}
 
