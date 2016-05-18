@@ -15,6 +15,13 @@ Communicator
 
 Исходящие сообщения, в конечном виде формируются на Transport-е.
 
+Примеры использования
+------------------
+1. [Profile][31] 
+2. [Chat][32]
+3. [Map][33]
+4. [Messenger][34]
+
 Установка RxAndroid в Eclipse
 -----------------------------
 Для работы RxAndroid требуется установить RxJava: 
@@ -37,3 +44,8 @@ Communicator
 ВНИМАНИЕ! Если внутри архива aar в папках res,assets,lib что-нибудь есть, или в файле AndroidManifest.xml написано что-нибудь кроме названия пакета и версии sdk, то [здесь][21] инструкция
 
 [21]: http://www.iphonedroid.com/blog/en/utilizar-ficheros-aar-en-eclipse/#.VwbcWTEiYdI
+[31]: https://github.com/Igorpi25/Profile
+[32]: https://github.com/Igorpi25/Chat
+[33]: https://github.com/Igorpi25/Map
+[34]: https://github.com/Igorpi25/Messenger
+
