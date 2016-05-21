@@ -52,7 +52,7 @@ public abstract class CommunicatorService extends Service implements Listener{
 	    registerReceiver(receiver_CONNECTIVITY_CHANGE, filter);
 	    
 	    //Initialize shared preferences
-	    Communicator.Initialize(getApplicationContext());
+	    Communicator.Initialize(getApplicationContext(),getServerUrl());
 	    	    
 	    for(TransportBase transport : transports){
 	    	transport.onCommunicatorServiceCreate();
@@ -125,13 +125,15 @@ public abstract class CommunicatorService extends Service implements Listener{
     	headers.add(header_userid);
     	headers.add(last_timestamp);
     	
-    	websocketclient = new WebSocketClient(URI.create(Communicator.URL_SERVER), this, headers);
+    	websocketclient = new WebSocketClient(URI.create(Communicator.getUrlServer()), this, headers);
     	
     	for(TransportBase transport : transports){
     		transport.websocketclient=websocketclient;
     	}
     	return websocketclient;
     }
+    
+    public abstract String getServerUrl(); // Returns protocol, url, port like  ws://igorpi25.ru:8001
     
 //------------WebsocketClientListener------------------------
     

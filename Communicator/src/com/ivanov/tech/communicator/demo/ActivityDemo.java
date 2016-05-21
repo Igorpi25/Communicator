@@ -17,6 +17,12 @@ import com.ivanov.tech.communicator.R;
  */
 public class ActivityDemo extends FragmentActivity {
 
+	//---------------Server URL-------------
+    public final static String URL_PROTOCOL="ws://";
+    public final static String URL_DOMEN="space14.ru";  
+    public final static String URL_PORT=":8001";//Websocket server port
+    public final static String URL_SERVER=URL_PROTOCOL+URL_DOMEN+URL_PORT;
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
