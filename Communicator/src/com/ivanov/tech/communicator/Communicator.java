@@ -28,15 +28,17 @@ public class Communicator {
     public static final String PREF_LAST_TIMESTAMP="PREF_LAST_TIMESTAMP";
     public static final long PREF_LAST_TIMESTAMP_DEFAULT=0;
     public static final String PREF_URL_SERVER="PREF_URL_SERVER";
+    public static final String PREF_COMMUNICATOR_SERVICE_CLASS="PREF_COMMUNICATOR_SERVICE_CLASS";
     
     static private SharedPreferences preferences=null;
     
-    public static void Initialize(Context context, String url_server){
+    public static void Initialize(Context context, String url_server, String communicator_service_class){
     	if(preferences==null){
     		preferences=context.getApplicationContext().getSharedPreferences(PREF, 0);
+    		
+    		preferences.edit().putString(PREF_URL_SERVER, url_server).commit();
+        	preferences.edit().putString(PREF_COMMUNICATOR_SERVICE_CLASS, communicator_service_class).commit();
     	}
-    	preferences.edit().putString(PREF_URL_SERVER, url_server).commit();
-    	
     }
     
     public static long getLastTimestamp(){		
@@ -51,5 +53,9 @@ public class Communicator {
 
     public static String getUrlServer(){		
     	return preferences.getString(PREF_URL_SERVER, null);
+  	}
+    
+    public static String getCommunicatorServiceClass(){
+    	return preferences.getString(PREF_COMMUNICATOR_SERVICE_CLASS, null);
   	}
 }

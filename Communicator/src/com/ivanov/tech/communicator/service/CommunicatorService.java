@@ -52,7 +52,7 @@ public abstract class CommunicatorService extends Service implements Listener{
 	    registerReceiver(receiver_CONNECTIVITY_CHANGE, filter);
 	    
 	    //Initialize shared preferences
-	    Communicator.Initialize(getApplicationContext(),getServerUrl());
+	    Communicator.Initialize(getApplicationContext(),getServerUrl(),getCommunicatorServiceClass());
 	    	    
 	    for(TransportBase transport : transports){
 	    	transport.onCommunicatorServiceCreate();
@@ -134,6 +134,8 @@ public abstract class CommunicatorService extends Service implements Listener{
     }
     
     public abstract String getServerUrl(); // Returns protocol, url, port like  ws://igorpi25.ru:8001
+    
+    public abstract String getCommunicatorServiceClass(); // Returns class of service that used to send messages through intent
     
 //------------WebsocketClientListener------------------------
     
