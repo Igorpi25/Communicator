@@ -120,10 +120,8 @@ public abstract class CommunicatorService extends Service implements Listener{
     	WebSocketClient websocketclient;
 
     	ArrayList<BasicNameValuePair> headers=new ArrayList<BasicNameValuePair>();    	
-    	BasicNameValuePair header_userid=new BasicNameValuePair("userid",String.valueOf(userid));    	
-    	BasicNameValuePair last_timestamp=new BasicNameValuePair("last_timestamp",String.valueOf(Communicator.getLastTimestamp()));
+    	BasicNameValuePair header_userid=new BasicNameValuePair("userid",String.valueOf(userid));    
     	headers.add(header_userid);
-    	headers.add(last_timestamp);
     	
     	websocketclient = new WebSocketClient(URI.create(Communicator.getUrlServer()), this, headers);
     	
@@ -160,7 +158,7 @@ public abstract class CommunicatorService extends Service implements Listener{
 
     @Override
     public void onMessage(String message) {
-    	//Log.d(TAG, "onMessage message="+message);  
+    	Log.d(TAG, "onMessage message="+message);  
 
         JSONObject json=null;
 	    int transport=0;

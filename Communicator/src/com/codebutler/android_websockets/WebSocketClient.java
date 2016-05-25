@@ -12,6 +12,8 @@ import org.apache.http.message.BasicLineParser;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONObject;
 
+import com.ivanov.tech.communicator.Communicator;
+
 import javax.net.SocketFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLException;
@@ -69,7 +71,7 @@ public class WebSocketClient {
     public void connect() {
         if (mThread != null && mThread.isAlive()) {
             return;
-        }
+        }        
 
         mThread = new Thread(new Runnable() {
             @Override
@@ -98,6 +100,10 @@ public class WebSocketClient {
                     out.print("Origin: " + origin.toString() + "\r\n");
                     out.print("Sec-WebSocket-Key: " + secret + "\r\n");
                     out.print("Sec-WebSocket-Version: 13\r\n");
+                    
+                    //last_timestamp to header
+                    out.print("last_timestamp: "+Communicator.getLastTimestamp()+"\r\n");
+                    
                     if (mExtraHeaders != null) {
                         for (NameValuePair pair : mExtraHeaders) {
                             out.print(String.format("%s: %s\r\n", pair.getName(), pair.getValue()));
