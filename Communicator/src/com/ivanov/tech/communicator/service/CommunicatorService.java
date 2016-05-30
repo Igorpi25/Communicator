@@ -2,6 +2,8 @@ package com.ivanov.tech.communicator.service;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -19,11 +21,22 @@ import android.net.NetworkInfo;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.RetryPolicy;
+import com.android.volley.TimeoutError;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.codebutler.android_websockets.WebSocketClient;
 import com.codebutler.android_websockets.WebSocketClient.Listener;
 import com.ivanov.tech.communicator.Communicator;
+import com.ivanov.tech.session.Session;
 
 public abstract class CommunicatorService extends Service implements Listener{
 
@@ -52,7 +65,7 @@ public abstract class CommunicatorService extends Service implements Listener{
 	    registerReceiver(receiver_CONNECTIVITY_CHANGE, filter);
 	    
 	    //Initialize shared preferences
-	    Communicator.Initialize(getApplicationContext(),getServerUrl(),getCommunicatorServiceClass());
+	    Communicator.Initialize(getApplicationContext(),getServerUrl(),getRestartServerUrl(),getCommunicatorServiceClass());
 	    	    
 	    for(TransportBase transport : transports){
 	    	transport.onCommunicatorServiceCreate();
@@ -132,6 +145,8 @@ public abstract class CommunicatorService extends Service implements Listener{
     }
     
     public abstract String getServerUrl(); // Returns protocol, url, port like  ws://igorpi25.ru:8001
+    
+    public abstract String getRestartServerUrl(); // Returns protocol, url, port like  ws://igorpi25.ru:8001
     
     public abstract String getCommunicatorServiceClass(); // Returns class of service that used to send messages through intent
     
@@ -215,11 +230,16 @@ public abstract class CommunicatorService extends Service implements Listener{
     public void onError(Exception error) {
        // Log.e(TAG, "onError error="+error);
       
-        Reconnect();
-        
         for(TransportBase transport : transports){
     		transport.onError(error);
     	}
+
+        if( (isOnline()) && (reconnect_attempts==2) ){
+        	restartServerRequest();
+        }else{
+        	Reconnect();
+        }
+        
     }
     
 //----------------Reconnecting---------------------------
@@ -278,9 +298,10 @@ public abstract class CommunicatorService extends Service implements Listener{
         
     	public void run() 
         {
-        	reconnect_attempt_waiting=false;        	
+        	reconnect_attempt_waiting=false;
         	handler_reconnectevents.sendEmptyMessage(1);
-        	websocketclient.connect();	
+        	
+        	websocketclient.connect();
         }
     }    
     
@@ -303,6 +324,85 @@ public abstract class CommunicatorService extends Service implements Listener{
     	   }
     };
  
+    //-------------------Server restart------------------------------
+    
+    public boolean isOnline() {
+        ConnectivityManager connMgr = (ConnectivityManager)this.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        return (networkInfo != null && networkInfo.isConnected());
+    }
+    
+    public void restartServerRequest() {
+
+        StringRequest stringrequest = new StringRequest(Request.Method.GET, getRestartServerUrl(), new Response.Listener<String>() {
+
+        	@Override
+			public void onResponse(String response) {
+            	Log.d(TAG, "restartServerRequest onResponse response="+response);
+            	try {
+					JSONObject json=new JSONObject(response);
+					
+					boolean error=json.getBoolean("error");
+					
+					if(!error){
+						int status=json.getInt("status");
+						Log.d(TAG, "restartServerRequest error=false status="+status);
+						if(status==0){
+							Log.d(TAG, "restartServerRequest server not running");
+							Reconnect();
+						}
+						if(status==1){
+							Log.d(TAG, "restartServerRequest server already running");
+							Reconnect();
+						}
+						
+					}else{
+						Log.e(TAG, "restartServerRequest error=true");
+					}
+					
+				} catch (JSONException e) {
+					Log.e(TAG, "restartServerRequest JSONException e="+e);
+				}            	
+            }
+			
+        }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                
+                if (error.getClass().equals(TimeoutError.class)) {
+                	Log.d(TAG, "restartServerRequest timeout. Reconnecting");
+                	
+                }else{
+                	Log.e(TAG, "restartServerRequest onErrorResponse error=" + error.toString());
+                }
+                Reconnect();
+            }
+        }){
+        	@Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                 HashMap<String, String> headers = new HashMap<String, String>();
+                 
+                 headers.put("Content-Type", "application/x-www-form-urlencoded");
+                 headers.put("Api-Key", Session.getApiKey());
+                 
+                 return headers;
+            }
+        	
+        };
+        
+
+        String tag_stringrequest ="restartServerRequest";
+
+        int socketTimeout = 3000;//3 seconds - wait for
+        RetryPolicy policy = new DefaultRetryPolicy(socketTimeout, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+        stringrequest.setRetryPolicy(policy);
+    	
+    	stringrequest.setTag(tag_stringrequest);
+    	Volley.newRequestQueue(getApplicationContext()).add(stringrequest);
+    
+    }
+    
 //-----------------Reconnecting Events---------------------------
     
     protected void onReconnectRefused(){
@@ -310,6 +410,11 @@ public abstract class CommunicatorService extends Service implements Listener{
     }
     
     protected void onReconnectAttempt(int attempt){
+    	
+    	if(attempt==1){
+    		
+    	}
+    	
     	//Toast.makeText(getApplicationContext(), "Lets-Race: connect attempt "+connectAttempts, Toast.LENGTH_SHORT).show();
     }
     
