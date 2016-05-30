@@ -391,7 +391,6 @@ public abstract class CommunicatorService extends Service implements Listener{
         	
         };
         
-
         String tag_stringrequest ="restartServerRequest";
 
         int socketTimeout = 3000;//3 seconds - wait for
